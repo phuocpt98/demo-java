@@ -6,20 +6,27 @@ import com.phuocpt98.demo.dto.request.UserUpdateRequest;
 import com.phuocpt98.demo.entity.User;
 import com.phuocpt98.demo.exception.AppException;
 import com.phuocpt98.demo.exception.ErrorCode;
+import com.phuocpt98.demo.mapper.UserMapper;
 import com.phuocpt98.demo.repository.UserRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    @Autowired
     private UserRepository userRepository;
 
-    public User create(UserCreationRequest request) {
-        User user = new User();
+    private UserMapper userMapper;
 
+
+    public User create(UserCreationRequest request) {
         if(userRepository.existsByFullName(request.getFull_name())){
             throw new AppException(ErrorCode.BAD_REQUEST);
         }
@@ -27,10 +34,7 @@ public class UserService {
             throw new AppException(ErrorCode.BAD_REQUEST);
         }
 
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
-        user.setEmail(request.getEmail());
-        user.setFullName(request.getFull_name());
+        User user = userMapper.toUser(request);
         return userRepository.save(user);
     }
 
