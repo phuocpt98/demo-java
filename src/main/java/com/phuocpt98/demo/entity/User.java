@@ -7,13 +7,16 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String username;
+
+    @Column(name = "password_hash")
     private String password;
     private String email;
     @Column(name = "full_name")
