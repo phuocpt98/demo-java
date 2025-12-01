@@ -21,6 +21,7 @@ public enum ErrorCode {
     USER_NOT_ACTIVE(6001, "Người dùng chưa được kích hoạt."),
     INVALID_REQUEST(1001, "Loi input"),
     INVALID_REQUEST_KEY(1002, "Loi input key"),
+    USER_NOT_EXITS(1003, "User not exits"),
     INVALID_CREDENTIALS(6002, "Tên đăng nhập hoặc mật khẩu không đúng.");
 
 

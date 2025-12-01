@@ -24,23 +24,24 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-        return userService.getAllUsers();
+    public ApiResponse<List<User>> getAllUsers(){
+        return ApiResponse.success(userService.getAllUsers());
     }
 
     @GetMapping("/users/{userId}")
-    public User getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+    public ApiResponse<User> getUserById(@PathVariable Long userId) {
+        return ApiResponse.success(userService.getUserById(userId));
     }
 
     @PutMapping("users/{userId}")
-    public User updateUser(@PathVariable Long userId, @RequestBody UserUpdateRequest userUpdateRequest) {
-        return userService.updateUser(userId, userUpdateRequest);
+    public ApiResponse<User> updateUser(@PathVariable Long userId, @RequestBody UserUpdateRequest userUpdateRequest) {
+        return ApiResponse.success(userService.updateUser(userId, userUpdateRequest));
     }
 
     @DeleteMapping("users/{userId}")
-    public String deleteUser(@PathVariable Long userId) {
+    public ApiResponse<?> deleteUser(@PathVariable Long userId) {
          userService.deleteUser(userId);
-         return "User deleted successfully";
+         return ApiResponse.success("User deleted successfully");
     }
+
 }
