@@ -3,19 +3,24 @@ package com.phuocpt98.demo.service;
 
 import com.phuocpt98.demo.dto.request.UserCreationRequest;
 import com.phuocpt98.demo.dto.request.UserUpdateRequest;
+import com.phuocpt98.demo.dto.response.UserResponse;
 import com.phuocpt98.demo.entity.User;
+import com.phuocpt98.demo.enums.Role;
 import com.phuocpt98.demo.exception.AppException;
 import com.phuocpt98.demo.exception.ErrorCode;
 import com.phuocpt98.demo.mapper.UserMapper;
+import com.phuocpt98.demo.repository.RoleRepository;
 import com.phuocpt98.demo.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -23,12 +28,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    private UserRepository userRepository;
+     UserRepository userRepository;
+     UserMapper userMapper;
+     PasswordEncoder passwordEncoder;
+     RoleRepository roleRepository;
 
-    private UserMapper userMapper;
 
-
-    public User create(UserCreationRequest request) {
+    public UserResponse create(UserCreationRequest request) {
         if(userRepository.existsByFullName(request.getFull_name())){
             throw new AppException(ErrorCode.BAD_REQUEST);
         }
@@ -36,11 +42,15 @@ public class UserService {
             throw new AppException(ErrorCode.BAD_REQUEST);
         }
 
-        PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-        request.setPassword(encoder.encode(request.getPassword()));
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User user = userMapper.toUser(request);
-        return userRepository.save(user);
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+//        user.setRoles(roles);
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public List<User> getAllUsers(){
@@ -51,16 +61,28 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow( () -> new AppException(ErrorCode.BAD_REQUEST));
     }
 
-    public User updateUser(Long userId, UserUpdateRequest userUpdateRequest){
+    public UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest){
         User user = getUserById(userId);
-        user.setPassword(userUpdateRequest.getPassword());
+
+        user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
         user.setEmail(userUpdateRequest.getEmail());
         user.setFullName(userUpdateRequest.getFull_name());
 
-        return userRepository.save(user);
+        var roles = roleRepository.findAllById(userUpdateRequest.getRole_ids());
+        user.setRoles(new HashSet<>(roles));
+        userRepository.save(user);
+        return userMapper.toUserResponse(user);
     }
 
     public void deleteUser(Long userId){
         userRepository.deleteById(userId);
+    }
+
+    public UserResponse getMyInfo(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        String name = authentication.getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITS));
+
+        return userMapper.toUserResponse(user);
     }
 }

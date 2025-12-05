@@ -9,25 +9,18 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Table(name = "users")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String username;
-
-    @Column(name = "password_hash")
-    String password;
-    String email;
-    @Column(name = "full_name")
-    String fullName;
+    String description;
 
     @ManyToMany
-    Set<Role> roles;
+    Set<Permission> permissions;
 }

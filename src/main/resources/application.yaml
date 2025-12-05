@@ -12,8 +12,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
 
 jwt:
-  signerKey: "OniYTjCBPYh3XyHxMyAxw1049qfbGcOA"
+  signer-key: "OniYTjCBPYh3XyHxMyAxw1049qfbGcOA"
+  expiration-time: 20000
+  refresh-expiration-time: 86400000

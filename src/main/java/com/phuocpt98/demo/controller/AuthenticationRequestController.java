@@ -4,6 +4,8 @@ import com.nimbusds.jose.JOSEException;
 import com.phuocpt98.demo.ApiResponse.ApiResponse;
 import com.phuocpt98.demo.dto.request.AuthenticationRequest;
 import com.phuocpt98.demo.dto.request.IntrospectRequest;
+import com.phuocpt98.demo.dto.request.LogOutRequest;
+import com.phuocpt98.demo.dto.request.RefreshRequest;
 import com.phuocpt98.demo.dto.response.AuthenticationResponse;
 import com.phuocpt98.demo.dto.response.IntrospectResponse;
 import com.phuocpt98.demo.service.AuthenticationService;
@@ -27,8 +29,20 @@ public class AuthenticationRequestController {
         return ApiResponse.success(authenticationService.authenticated(authenticationRequest));
     }
 
+    @PostMapping("/refresh-token")
+    public ApiResponse<AuthenticationResponse> refreshToken(@RequestBody RefreshRequest refreshRequest) throws ParseException, JOSEException {
+        return ApiResponse.success(authenticationService.refreshToken(refreshRequest));
+    }
+
     @PostMapping("/introspect")
     public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest introspectRequest) throws ParseException, JOSEException {
         return ApiResponse.success(authenticationService.introspect(introspectRequest));
+    }
+
+    @PostMapping("/logout-a")
+    public ApiResponse<?> logout(@RequestBody LogOutRequest logOutRequest) throws ParseException, JOSEException {
+
+        authenticationService.logout(logOutRequest);
+        return ApiResponse.success();
     }
 }

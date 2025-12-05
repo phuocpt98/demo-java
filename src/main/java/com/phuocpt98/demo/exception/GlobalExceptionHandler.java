@@ -1,16 +1,26 @@
 package com.phuocpt98.demo.exception;
 
 import com.phuocpt98.demo.ApiResponse.ApiResponse;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintViolation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.Map;
+import java.util.Objects;
+
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String MIN_ATTRIBUTES = "min";
+    private static final String MAX_ATTRIBUTES = "max";
     /**
      * Xử lý lỗi nghiệp vụ tùy chỉnh (Custom Business Exception)
      * Thường là các lỗi 4xx (Bad Request, Forbidden, Not Found)
@@ -50,12 +60,13 @@ public class GlobalExceptionHandler {
                 .getAllErrors().get(0)
                 .getDefaultMessage();
 
+        var constrainViolations = e.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+        var attributes  = constrainViolations.getConstraintDescriptor().getAttributes();
 
         ErrorCode errorCode;
         try {
             // 1. Cố gắng chuyển đổi errorMessage thành tên ENUM (ví dụ: "INVALID_CREDENTIALS")
             errorCode = ErrorCode.valueOf(errorMessage);
-
         } catch (IllegalArgumentException ex) {
             errorCode = ErrorCode.INVALID_REQUEST_KEY;
         }
@@ -63,7 +74,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .badRequest() // 400 Bad Request
-                .body(ApiResponse.error(errorCode.getCode(), errorCode.getMessage()));
+                .body(ApiResponse.error(errorCode.getCode(), Objects.nonNull(attributes) ? mapAttributeValue(errorCode.getMessage(), attributes) : errorCode.getMessage()));
+    }
+
+    private String mapAttributeValue(String message, Map<String, Object> attributes) {
+        String min = attributes.get(MIN_ATTRIBUTES).toString();
+        String max = attributes.get(MAX_ATTRIBUTES).toString();
+        return message.replace("{" + MIN_ATTRIBUTES + "}", min).replace("{" + MAX_ATTRIBUTES+ "}", max);
     }
 
     // --- Xử lý Lỗi Chung (Fallback) ---
@@ -103,5 +120,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR) // Trả về HTTP 500
                 .body(apiResponse);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<?>> handlingAccessDeniedException(AccessDeniedException exception){
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(ApiResponse.error(errorCode.getCode(), errorCode.getMessage()));
     }
 }
