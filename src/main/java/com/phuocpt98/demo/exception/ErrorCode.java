@@ -1,11 +1,8 @@
 package com.phuocpt98.demo.exception;
 
-import feign.FeignException;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 
     @Getter
@@ -50,6 +47,3 @@ import org.springframework.http.HttpStatus;
 
 
 }
-
-
-

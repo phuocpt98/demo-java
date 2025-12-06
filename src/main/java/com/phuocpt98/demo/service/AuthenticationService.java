@@ -1,6 +1,17 @@
 package com.phuocpt98.demo.service;
 
 
+import java.text.ParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.StringJoiner;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -18,23 +29,12 @@ import com.phuocpt98.demo.exception.AppException;
 import com.phuocpt98.demo.exception.ErrorCode;
 import com.phuocpt98.demo.repository.InvalidatedTokenRepository;
 import com.phuocpt98.demo.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import java.text.ParseException;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Objects;
-import java.util.StringJoiner;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -59,13 +59,13 @@ public class AuthenticationService {
     Long REFRESH_TIME;
 
 
-    public AuthenticationResponse authenticated(AuthenticationRequest authenticationRequest){
+    public AuthenticationResponse authenticated(AuthenticationRequest authenticationRequest) {
         var user = userRepository.findByUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXITS));
 
-        boolean authenticated =  passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
+        boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
 
-        if(!authenticated){
+        if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
@@ -74,8 +74,8 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().accessToken(token).authenticated(true).build();
     }
 
-    private String generateToken(User user){
-        JWSHeader header= new JWSHeader(JWSAlgorithm.HS256);
+    private String generateToken(User user) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
@@ -88,7 +88,7 @@ public class AuthenticationService {
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
-        JWSObject jwsObject   = new JWSObject(header, payload);
+        JWSObject jwsObject = new JWSObject(header, payload);
 
 //        String token = jwsObject.serialize();
 
@@ -100,12 +100,13 @@ public class AuthenticationService {
         }
     }
 
-    private String buildScope(User user){
-        StringJoiner joiner = new StringJoiner( " ");
-        if(!CollectionUtils.isEmpty(user.getRoles())){
+    private String buildScope(User user) {
+        StringJoiner joiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
             user.getRoles().forEach(
-                    role -> {joiner.add("ROLE_" + role.getDescription());
-                        if(!CollectionUtils.isEmpty(role.getPermissions())){
+                    role -> {
+                        joiner.add("ROLE_" + role.getDescription());
+                        if (!CollectionUtils.isEmpty(role.getPermissions())) {
                             role.getPermissions().forEach(permission -> joiner.add(permission.getDescription()));
                         }
 
@@ -119,21 +120,20 @@ public class AuthenticationService {
     public IntrospectResponse introspect(IntrospectRequest introspectRequest) throws JOSEException, ParseException {
         var token = introspectRequest.getToken();
 
-            boolean isValid = true;
+        boolean isValid = true;
 
-            try{
-                verifyToken(token, false);
-            }
-            catch (AppException appException){
-                isValid = false;
-            }
+        try {
+            verifyToken(token, false);
+        } catch (AppException appException) {
+            isValid = false;
+        }
 
 
         return IntrospectResponse.builder().active(isValid).build();
     }
 
 
-    private SignedJWT verifyToken(String token,boolean isRefresh) throws JOSEException, ParseException {
+    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
 
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
@@ -143,16 +143,15 @@ public class AuthenticationService {
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
 
-
         boolean verify = signedJWT.verify(verifier);
         boolean active = expiration.after(new Date());
-        if(!active || !verify) {
+        if (!active || !verify) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
         String jit = signedJWT.getJWTClaimsSet().getJWTID();
 
-        if(invalidatedTokenRepository.existsById(jit)){
+        if (invalidatedTokenRepository.existsById(jit)) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
         return signedJWT;
@@ -180,7 +179,7 @@ public class AuthenticationService {
     }
 
 
-    public AuthenticationResponse refreshToken(RefreshRequest request)  throws JOSEException, ParseException{
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws JOSEException, ParseException {
         // kiem tra hieu luc token
         var signJWT = verifyToken(request.getToken(), true);
         String username = signJWT.getJWTClaimsSet().getSubject();

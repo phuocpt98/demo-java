@@ -1,24 +1,22 @@
 package com.phuocpt98.demo.service;
 
 
-import com.phuocpt98.demo.dto.request.PermissionRequest;
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.phuocpt98.demo.dto.request.RoleRequest;
-import com.phuocpt98.demo.dto.response.PermissionResponse;
 import com.phuocpt98.demo.dto.response.RoleResponse;
-import com.phuocpt98.demo.entity.Permission;
 import com.phuocpt98.demo.entity.Role;
-import com.phuocpt98.demo.mapper.PermissionMapper;
 import com.phuocpt98.demo.mapper.RoleMapper;
 import com.phuocpt98.demo.repository.PermissionRepository;
 import com.phuocpt98.demo.repository.RoleRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

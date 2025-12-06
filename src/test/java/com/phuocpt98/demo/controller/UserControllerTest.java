@@ -1,11 +1,6 @@
 package com.phuocpt98.demo.controller;
 
 
-import com.phuocpt98.demo.dto.request.UserCreationRequest;
-import com.phuocpt98.demo.dto.response.UserResponse;
-import com.phuocpt98.demo.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,11 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcResultMatchersDsl;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.phuocpt98.demo.dto.request.UserCreationRequest;
+import com.phuocpt98.demo.dto.response.UserResponse;
+import com.phuocpt98.demo.service.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 
 @Slf4j

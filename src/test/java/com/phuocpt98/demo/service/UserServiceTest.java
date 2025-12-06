@@ -1,12 +1,8 @@
 package com.phuocpt98.demo.service;
 
 
-import com.phuocpt98.demo.dto.request.UserCreationRequest;
-import com.phuocpt98.demo.dto.response.UserResponse;
-import com.phuocpt98.demo.entity.User;
-import com.phuocpt98.demo.exception.AppException;
-import com.phuocpt98.demo.exception.ErrorCode;
-import com.phuocpt98.demo.repository.UserRepository;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +13,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.util.Optional;
+import com.phuocpt98.demo.dto.request.UserCreationRequest;
+import com.phuocpt98.demo.dto.response.UserResponse;
+import com.phuocpt98.demo.entity.User;
+import com.phuocpt98.demo.exception.AppException;
+import com.phuocpt98.demo.exception.ErrorCode;
+import com.phuocpt98.demo.repository.UserRepository;
 
 @SpringBootTest
 @TestPropertySource(locations = "/test.properties")
@@ -37,7 +38,7 @@ public class UserServiceTest {
     private User user;
 
     @BeforeEach
-    void initData(){
+    void initData() {
         userCreationRequest = UserCreationRequest.builder().username("test").password("123456").email("test@gmail.com").full_name("test full name").build();
 
         userResponse = UserResponse.builder().id(123L).username("test").email("test@gmail.com").full_name("test full name").build();
@@ -49,7 +50,7 @@ public class UserServiceTest {
 
 
     @Test
-    void createUser_validate_success(){
+    void createUser_validate_success() {
         // Given
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(user);
         Mockito.when(userRepository.existsByUsername(Mockito.any())).thenReturn(false);
@@ -68,7 +69,7 @@ public class UserServiceTest {
 
     @Test
     @WithMockUser(username = "test", roles = {"ADMIN"})
-    void getMyInfo_validate_success(){
+    void getMyInfo_validate_success() {
         // Given
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(Optional.of(user));
 
@@ -81,14 +82,14 @@ public class UserServiceTest {
 
     @Test
     @WithMockUser(username = "test", roles = {"ADMIN"})
-    void getMyI_notFound_validate_fail(){
+    void getMyI_notFound_validate_fail() {
         // Given
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(Optional.ofNullable(null));
 
 
         // when
         var exception = Assertions.assertThrows(
-                AppException.class, () ->userService.getMyInfo()
+                AppException.class, () -> userService.getMyInfo()
         );
         // then
         Assertions.assertEquals(ErrorCode.USER_NOT_EXITS, exception.getErrorCode());

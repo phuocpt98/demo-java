@@ -1,13 +1,12 @@
 package com.phuocpt98.demo;
 
-import lombok.extern.slf4j.Slf4j;
+import java.security.MessageDigest;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.security.MessageDigest;
-import java.util.Base64;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class IdentityServiceApplicationTest {

@@ -1,10 +1,10 @@
 package com.phuocpt98.demo.dto.response;
 
 
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Getter
 @Setter

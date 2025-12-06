@@ -1,11 +1,12 @@
 package com.phuocpt98.demo.mapper;
 
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import com.phuocpt98.demo.dto.request.UserCreationRequest;
 import com.phuocpt98.demo.dto.response.UserResponse;
 import com.phuocpt98.demo.entity.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 
 @Mapper(componentModel = "spring")

@@ -16,7 +16,10 @@
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2025.1.0</spring-cloud.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version> </properties>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <spotless.version>2.43.0</spotless.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -230,6 +233,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <removeUnusedImports />
+                        <toggleOffOn/>
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+                            
+                            <!-- XÓA phần <indent> vì Palantir đã tự xử lý indent là 4 spaces -->
+
+                            <importOrder>
+                                <!-- Specify either order or file, but not both -->
+                                <order>java,jakarta,org,com,com.diffplug,</order>
+                            </importOrder>
+                        </java>
+                    </configuration>
+                    <!-- Uncomment đoạn này nếu muốn chạy tự động khi mvn install -->
+                    <!-- <executions>
+                        <execution>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>apply</goal>
+                            </goals>
+                        </execution>
+                    </executions> -->
+                </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

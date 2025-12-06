@@ -1,6 +1,13 @@
 package com.phuocpt98.demo.service;
 
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.phuocpt98.demo.dto.request.UserCreationRequest;
 import com.phuocpt98.demo.dto.request.UserUpdateRequest;
 import com.phuocpt98.demo.dto.response.UserResponse;
@@ -11,18 +18,11 @@ import com.phuocpt98.demo.exception.ErrorCode;
 import com.phuocpt98.demo.mapper.UserMapper;
 import com.phuocpt98.demo.repository.RoleRepository;
 import com.phuocpt98.demo.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Slf4j
 @Service

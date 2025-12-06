@@ -1,7 +1,8 @@
 package com.phuocpt98.demo.repository;
 
-import com.phuocpt98.demo.entity.InvalidatedToken;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.phuocpt98.demo.entity.InvalidatedToken;
 
 public interface InvalidatedTokenRepository  extends JpaRepository<InvalidatedToken, String> {
 

@@ -1,22 +1,22 @@
 package com.phuocpt98.demo.controller;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
 import com.phuocpt98.demo.ApiResponse.ApiResponse;
 import com.phuocpt98.demo.dto.request.UserCreationRequest;
 import com.phuocpt98.demo.dto.request.UserUpdateRequest;
 import com.phuocpt98.demo.dto.response.UserResponse;
 import com.phuocpt98.demo.entity.User;
-import com.phuocpt98.demo.repository.UserRepository;
 import com.phuocpt98.demo.service.UserService;
-import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController

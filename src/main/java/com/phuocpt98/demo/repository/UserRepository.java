@@ -1,9 +1,10 @@
 package com.phuocpt98.demo.repository;
 
-import com.phuocpt98.demo.entity.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.phuocpt98.demo.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);

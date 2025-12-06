@@ -1,10 +1,11 @@
 package com.phuocpt98.demo.dto.request;
 
 
-import com.phuocpt98.demo.validator.PasswordConstraint;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+
+import com.phuocpt98.demo.validator.PasswordConstraint;
+
 import lombok.*;
 
 
