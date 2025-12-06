@@ -14,6 +14,7 @@ import com.phuocpt98.demo.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 
+@Slf4j
 @Service
 
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class UserService {
 
 
     public UserResponse create(UserCreationRequest request) {
+        log.info("Create user");
         if(userRepository.existsByFullName(request.getFull_name())){
             throw new AppException(ErrorCode.BAD_REQUEST);
         }

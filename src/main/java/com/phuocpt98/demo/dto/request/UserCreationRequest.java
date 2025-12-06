@@ -5,13 +5,14 @@ import com.phuocpt98.demo.validator.PasswordConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UserCreationRequest {
 
     @NotEmpty(message = "INVALID_REQUEST")
